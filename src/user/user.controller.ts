@@ -1,5 +1,7 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import { Controller, Post, Body, Request } from "@nestjs/common";
 import { UserService } from "./user.service";
+import { createUserDto } from "./dto/createUserDto";
+import { loginDto } from "./dto/loginDto";
 
 @Controller('user')
 export class UserController{
@@ -7,22 +9,20 @@ export class UserController{
 
     @Post('/register')
     async register(
-        @Body('username') username: string,
-        @Body('password') password: string,
+        @Body() createUserDto: createUserDto,
     ):Promise<{message:string}>{
-        await this.userService.createUser(username, password);
+        await this.userService.createUser(createUserDto.username, createUserDto.password);
         return { message: "User registered succeessfully" };
     }
 
     @Post('/login')
     async login(
-        @Body('username') username: string,
-        @Body('password') password: string,
+        @Body() loginDto: loginDto
     ): Promise<{ message: string }>{
-        const user = await this.userService.findUser(username , password);
+        const user = await this.userService.findUser(loginDto.username, loginDto.password);
         if(!user){
             throw new Error('Invalid username or password');
         }
-        return { message: `Login successful welcome ${username}`};
+        return { message: `Login successful welcome ${loginDto.username}`};
     }
 }
