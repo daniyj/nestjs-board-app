@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/createBoardDto';
 import { Board } from './board.entity';
 import { identity } from 'rxjs';
+import { UpdateBoardDto } from './dto/UpdateBoardDto';
 
 @Controller('board')
 export class BoardController {
@@ -18,7 +19,8 @@ export class BoardController {
     // 게시물 단일, 전체 조회
     // 게시물 단일 조회 @Query이용
     @Get()
-    async getBoard(@Query('boardId') boardId?:number
+    async getBoard(
+        @Query('boardId') boardId?:number
     ):Promise<Board| Board[]>{
         if(boardId){
             return this.boardService.getOneBoard(boardId);
@@ -33,4 +35,13 @@ export class BoardController {
     //     console.log('Received boardId:',boardId);
     //     return this.boardService.getOneBoard(boardId);
     // }
+
+    @Put()
+    async updateBoard(
+        @Query('boardId') boardId:number,
+        @Body() updateBoardDto:UpdateBoardDto)
+        :Promise<{message:string}>{
+        return this.boardService.updateBoard(boardId, updateBoardDto);
+    }
+    
 }

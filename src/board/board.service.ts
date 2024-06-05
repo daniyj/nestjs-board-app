@@ -1,13 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './board.entity';
+import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/createBoardDto';
+import { UpdateBoardDto } from './dto/UpdateBoardDto';
+
 
 @Injectable()
 export class BoardService {
-    constructor(@InjectRepository(Board)
-private readonly boardRepository: Repository<Board>,
+    constructor(
+        @InjectRepository(Board)
+            private readonly boardRepository: Repository<Board>,
+        @InjectRepository(User)
+            private readonly userRepository: Repository<User>,
 ){}
     async createBoard(createBoardDto: CreateBoardDto):Promise<Board>{
         const board = new Board();
@@ -18,17 +24,32 @@ private readonly boardRepository: Repository<Board>,
         return this.boardRepository.save(board);
     }
     async getAllBoards():Promise<Board[]>{
-        console.log('getAllBoards 함수호출');
         return await this.boardRepository.find();
     }
     async getOneBoard(boardId: number):Promise<Board>{
-        console.log('getOneBoard 함수호출');
-        const board = await this.boardRepository.findOne({  where:{id: boardId}  });
-        console.log(board.id);
+        const board = await this.boardRepository.findOne({ where:{id: boardId} });
         if(!board){
             throw new NotFoundException('Board not found');
         }
         return board;
+    }
+    async updateBoard(boardId:number, updateBoardDto:UpdateBoardDto){
+        const board = await this.boardRepository.findOne({ where:{id: boardId}});
+        const user = await this.userRepository.findOne({ where:{id: updateBoardDto.user.id}});
+
+        if(boardId!=user.id){
+            console.log('boardId',boardId);
+            console.log('userId',user.id);
+            throw new ForbiddenException('you dont have permission to access his resource');
+        }
+        
+        // 의문. 3개 항목을 다 수정하지 않을수도 있는데 그럼 dto의 값이 다 들어오지 않아도 
+        // 에러가 나지 않나??
+        board.title = updateBoardDto.title;
+        board.content = updateBoardDto.content;
+        board.isPublic = updateBoardDto.isPublic;
+        this.boardRepository.save(board);
+        return { message: "Board updated successfully" };
     }
 
 }

@@ -19,7 +19,4 @@ export class UserService {
             { where: {username,password} }
         );
     }
-    
-    
-
 }
