@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './board.entity';
 import { Repository } from 'typeorm';
@@ -18,7 +18,17 @@ private readonly boardRepository: Repository<Board>,
         return this.boardRepository.save(board);
     }
     async getAllBoards():Promise<Board[]>{
+        console.log('getAllBoards 함수호출');
         return await this.boardRepository.find();
+    }
+    async getOneBoard(boardId: number):Promise<Board>{
+        console.log('getOneBoard 함수호출');
+        const board = await this.boardRepository.findOne({  where:{id: boardId}  });
+        console.log(board.id);
+        if(!board){
+            throw new NotFoundException('Board not found');
+        }
+        return board;
     }
 
 }
