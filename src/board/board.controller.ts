@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/createBoardDto';
+import { Board } from './board.entity';
 
 @Controller('board')
 export class BoardController {
@@ -12,5 +13,9 @@ export class BoardController {
     ):Promise<{message:string}>{
         this.boardService.createBoard(createBoardDto);
         return { message: "Board created successfully" };
+    }
+    @Get()
+    async getBoards():Promise<Board[]>{
+        return this.boardService.getAllBoards();
     }
 }

@@ -17,6 +17,8 @@ private readonly boardRepository: Repository<Board>,
         board.user = createBoardDto.user; // 변경될 수 있음 우선 작성
         return this.boardRepository.save(board);
     }
-    
+    async getAllBoards():Promise<Board[]>{
+        return await this.boardRepository.find();
+    }
 
 }
