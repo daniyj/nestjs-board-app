@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request } from "@nestjs/common";
+import { Controller, Post, Body, Request, Delete, Param } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/CreateUserDto";
 import { LoginDto } from "./dto/LoginDto";
@@ -24,5 +24,12 @@ export class UserController{
             throw new Error('Invalid username or password');
         }
         return { message: `Login successful welcome ${loginDto.username}`};
+    }
+    @Delete('/:userId')
+    async deleteUser(
+        @Param('userId') userId:number
+    ):Promise<{ message: string}>{
+        console.log('userId=',userId);
+        return this.userService.deleteUser(userId);
     }
 }
