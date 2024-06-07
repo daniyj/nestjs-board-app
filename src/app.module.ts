@@ -19,7 +19,8 @@ import { Board } from './board/board.entity';
         User, 
         Board
       ],
-      synchronize : true
+      synchronize : true,
+      logging: true,
     }),
     UserModule,
     BoardModule,
