@@ -1,10 +1,11 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Board } from './board.entity';
 import { User } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { CreateBoardDto } from './dto/createBoardDto';
 import { UpdateBoardDto } from './dto/UpdateBoardDto';
+import { DeleteBoardDto } from './dto/DeleteBoardDto';
 
 
 @Injectable()
@@ -42,14 +43,31 @@ export class BoardService {
             console.log('userId',user.id);
             throw new ForbiddenException('you dont have permission to access his resource');
         }
-        
-        // 의문. 3개 항목을 다 수정하지 않을수도 있는데 그럼 dto의 값이 다 들어오지 않아도 
-        // 에러가 나지 않나??
         board.title = updateBoardDto.title;
         board.content = updateBoardDto.content;
         board.isPublic = updateBoardDto.isPublic;
         this.boardRepository.save(board);
         return { message: "Board updated successfully" };
+    }
+    async deleteBoard(boardId:number, deleteBoardDto: DeleteBoardDto){
+        const board = await this.boardRepository.findOne({ 
+            where: {id: boardId},
+            relations: ['user'],
+        });
+        if(!board){
+            throw new NotFoundException('board not found');
+        }
+        
+        const user = await this.userRepository.findOne({ where:{ id:deleteBoardDto.user.id}});
+
+        if(!user){
+            throw new NotFoundException('user not found');
+        }
+        if(user.id!==board.user.id){
+            throw new BadRequestException(`you don't have permission to delete this board`);
+        }
+        await this.boardRepository.remove(board);
+        return { message: "Board deleted successfully"};
     }
 
 }

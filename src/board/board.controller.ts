@@ -4,6 +4,7 @@ import { CreateBoardDto } from './dto/createBoardDto';
 import { Board } from './board.entity';
 import { identity } from 'rxjs';
 import { UpdateBoardDto } from './dto/UpdateBoardDto';
+import { DeleteBoardDto } from './dto/DeleteBoardDto';
 
 @Controller('board')
 export class BoardController {
@@ -29,7 +30,7 @@ export class BoardController {
         }
     }
 
-    // 게시물 단일 조회 @Param을 이용
+    // 게시물 단일 조회 @Param 이용
     // @Get(':boardId')
     // async getOneBoard(@Param('boardId') boardId:number):Promise<Board>{
     //     console.log('Received boardId:',boardId);
@@ -43,4 +44,14 @@ export class BoardController {
         :Promise<{message:string}>{
         return this.boardService.updateBoard(boardId, updateBoardDto);
     }
+    @Delete('/:boardId')
+    async deleteBoard(
+        @Param('boardId') boardId: number, 
+        @Body() deleteBoardDto: DeleteBoardDto)
+        :Promise<{message:string}>{
+            console.log('deleteBoardDto.user.id=',deleteBoardDto.user.id);
+            return this.boardService.deleteBoard(boardId, deleteBoardDto);
+        }
+
+    
 }
