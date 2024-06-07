@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/createBoardDto';
 import { Board } from './board.entity';
@@ -36,12 +36,11 @@ export class BoardController {
     //     return this.boardService.getOneBoard(boardId);
     // }
 
-    @Put()
+    @Patch()
     async updateBoard(
         @Query('boardId') boardId:number,
         @Body() updateBoardDto:UpdateBoardDto)
         :Promise<{message:string}>{
         return this.boardService.updateBoard(boardId, updateBoardDto);
     }
-    
 }
