@@ -11,29 +11,33 @@ export class UserController{
     async register(
         @Body() createUserDto: CreateUserDto,
     ):Promise<{message:string}>{
-        await this.userService.createUser(createUserDto.username, createUserDto.password);
-        return { message: "User registered succeessfully" };
+        return await this.userService.createUser(createUserDto.username, createUserDto.password);
     }
 
     @Get()
     async getAllUsers(){
         return this.userService.getAllUsers();
     }
-    @Post('/login')
+    // @Post('/login')
+    // async login(
+    //     @Body() loginDto: LoginDto
+    // ): Promise<{ message: string }>{
+    //     const user = await this.userService.findUser(loginDto.username, loginDto.password);
+    //     if(!user){
+    //         throw new Error('Invalid username or password');
+    //     }
+    //     return { message: `Login successful welcome ${loginDto.username}`};
+    // }
+        @Post('/login')
     async login(
         @Body() loginDto: LoginDto
     ): Promise<{ message: string }>{
-        const user = await this.userService.findUser(loginDto.username, loginDto.password);
-        if(!user){
-            throw new Error('Invalid username or password');
-        }
-        return { message: `Login successful welcome ${loginDto.username}`};
+        return await this.userService.findUser(loginDto.username, loginDto.password);
     }
     @Delete('/:userId')
     async deleteUser(
         @Param('userId') userId:number
     ):Promise<{ message: string}>{
-        console.log('userId=',userId);
         return this.userService.deleteUser(userId);
     }
 }

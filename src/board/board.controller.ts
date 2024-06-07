@@ -14,8 +14,7 @@ export class BoardController {
     async createBoard(
         @Body() createBoardDto: CreateBoardDto
     ):Promise<{message:string}>{
-        this.boardService.createBoard(createBoardDto);
-        return { message: "Board created successfully" };
+        return this.boardService.createBoard(createBoardDto);
     }
     // 게시물 단일, 전체 조회
     // 게시물 단일 조회 @Query이용
@@ -49,9 +48,6 @@ export class BoardController {
         @Param('boardId') boardId: number, 
         @Body() deleteBoardDto: DeleteBoardDto)
         :Promise<{message:string}>{
-            console.log('deleteBoardDto.user.id=',deleteBoardDto.user.id);
             return this.boardService.deleteBoard(boardId, deleteBoardDto);
         }
-
-    
 }

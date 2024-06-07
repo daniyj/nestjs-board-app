@@ -16,13 +16,14 @@ export class BoardService {
         @InjectRepository(User)
             private readonly userRepository: Repository<User>,
 ){}
-    async createBoard(createBoardDto: CreateBoardDto):Promise<Board>{
+    async createBoard(createBoardDto: CreateBoardDto){
         const board = new Board();
         board.title = createBoardDto.title;
         board.content = createBoardDto.content;
         board.isPublic = createBoardDto.isPublic;
         board.user = createBoardDto.user; // 변경될 수 있음 우선 작성
-        return this.boardRepository.save(board);
+        this.boardRepository.save(board);
+        return { message: "Board created successfully" };
     }
     async getAllBoards():Promise<Board[]>{
         return await this.boardRepository.find();
@@ -67,6 +68,7 @@ export class BoardService {
             throw new BadRequestException(`you don't have permission to delete this board`);
         }
         await this.boardRepository.remove(board);
+        
         return { message: "Board deleted successfully"};
     }
 
