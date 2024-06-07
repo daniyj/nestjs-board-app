@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, Delete, Param } from "@nestjs/common";
+import { Controller, Post, Body, Request, Delete, Param, Get } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/CreateUserDto";
 import { LoginDto } from "./dto/LoginDto";
@@ -15,6 +15,10 @@ export class UserController{
         return { message: "User registered succeessfully" };
     }
 
+    @Get()
+    async getAllUsers(){
+        return this.userService.getAllUsers();
+    }
     @Post('/login')
     async login(
         @Body() loginDto: LoginDto

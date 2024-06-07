@@ -15,6 +15,9 @@ export class UserService {
         user.password = password;
         return this.userRepository.save(user);
     }
+    async getAllUsers():Promise<User[]>{ 
+        return await this.userRepository.find();
+    }
     async findUser(username: string, password:string):Promise<User | undefined>{
         return this.userRepository.findOne(
             { where: {username,password} }
